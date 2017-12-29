@@ -1,0 +1,12 @@
+{
+	"id": "radius_login",
+	"version": "1.0",
+	"description": "RADIUS Login integration for UliCMS",
+	"categories": [
+		"security"
+	],
+	"compatible_from": "2018.1",
+	"dependencies": [
+		"klogger"
+	]
+}

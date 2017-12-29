@@ -1,0 +1,4 @@
+<?php
+define ( "DEFAULT_RADIUS_AUTHENTICATION_PORT", 1812 );
+define ( "DEFAULT_RADIUS_TIMEOUT", 5 );
+define ( "DEFAULT_MAX_TRIES", 3 );
