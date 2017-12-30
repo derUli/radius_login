@@ -48,3 +48,13 @@ radius_login offers some tweakable configuration parameters.
 
 **sync_passwords**
 Sync Radius passwords with local users on login.
+
+**default_lastname**
+Default Lastname for newly created users.
+
+**default_firstname**
+Default Firstname for newly created users.
+
+**mail_suffix**
+Mail Suffix for newly created users.
+Mail addresses will be constructed in scheme [Username]@[mail_suffix]
