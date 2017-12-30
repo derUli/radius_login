@@ -1,6 +1,6 @@
 # radius_login
 
-Enables users to login using RADIUS server
+Enables users to login using a RADIUS server
 
 ## Dependencies
 
