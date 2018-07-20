@@ -11,7 +11,7 @@ class RadiusLogin extends Controller {
 		}
 	}
 	public function getConfiguration() {
-		$cfg = new config ();
+		$cfg = new CMSConfig ();
 		if (isset ( $cfg->radius_login )) {
 			return $cfg->radius_login;
 		}
