@@ -37,7 +37,7 @@ class RadiusAuthenticator {
 			case RADIUS_ACCESS_CHALLENGE :
 				$this->error = get_translation ( "challenge_required" );
 			default :
-				// TODO: Fehlerstrins von libradius benutzerfreundlich aufbereiten
+				// TODO: Fehlerstrings von libradius benutzerfreundlich aufbereiten
 				$this->error = get_translation ( "radius_error_occurred", array (
 						"%error%" => radius_strerror ( $radius ) 
 				) );

@@ -10,7 +10,7 @@ Enables users to login using a RADIUS server
 
 ## Installation instructions
 
-1. Add this snippet to your cms-config.php before installation of packages. Adjust it to your individual requirements.
+1. Add this snippet to your CMSConfig.php before installation of packages. Adjust it to your individual requirements.
 
 ```php
 	var $radius_login = [ 

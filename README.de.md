@@ -10,7 +10,7 @@ Ermöglicht Usern sich über einen RADIUS Server an UliCMS anzumelden.
 
 ## Installationsanleitung
 
-1. Fügen Sie vor der Installation des Moduls folgendes Snippet in die Datei **cms-config.php** ein. Passen Sie die Konfiguration wie gewünscht an
+1. Fügen Sie vor der Installation des Moduls folgendes Snippet in die Datei **CMSConfig.php** ein. Passen Sie die Konfiguration wie gewünscht an
 
 ```php
 	var $radius_login = [ 
