@@ -5,6 +5,6 @@
 	"categories": [
 		"security"
 	],
-	"compatible_from": "2018.2",
+	"compatible_from": "2018.3",
 	"dependencies": []
 }
