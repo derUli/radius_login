@@ -3,6 +3,7 @@
 class RadiusLogin extends Controller
 {
 
+    // Initialize logging if enabled
     public function beforeInit()
     {
         $cfg = $this->getConfiguration();
@@ -17,6 +18,7 @@ class RadiusLogin extends Controller
         }
     }
 
+    // get radius_login configuration from config file
     public function getConfiguration()
     {
         $cfg = new CMSConfig();
@@ -26,6 +28,7 @@ class RadiusLogin extends Controller
         return null;
     }
 
+    // handle authentication
     public function sessionDataFilter($sessionData)
     {
         // empty passwords are not supported
@@ -34,6 +37,7 @@ class RadiusLogin extends Controller
         }
         $username = trim($_POST["user"]);
         $cfg = $this->getConfiguration();
+        
         $skip_on_error = (isset($cfg["skip_on_error"]) and $cfg["skip_on_error"]);
         if ($skip_on_error) {
             $this->debug("skip_on_error is enabled");
@@ -46,12 +50,14 @@ class RadiusLogin extends Controller
         if ($success) {
             $user = getUserByName($username);
             $email = $username . "@" . $cfg["mail_suffix"];
+            // Create user if it doesn't exists (if create_user is enabled)
             if (! $user and isset($cfg["create_user"]) and $cfg["create_user"]) {
                 $this->debug("User $username doesn't exists. Create it.");
                 adduser($username, $cfg["default_lastname"] ?? "Doe", $cfg["default_firstname"] ?? "John", $email, $_POST["password"], false);
             }
             $user = getUserByName($username);
             if ($user) {
+                // Sync RADIUS password to UliCMS users database (if sync_passwords is enabled)
                 if (isset($cfg["sync_passwords"]) and $cfg["sync_passwords"]) {
                     $pwdUser = new User();
                     $pwdUser->loadByUsername($username);
@@ -72,6 +78,7 @@ class RadiusLogin extends Controller
             }
             $error = $authenticator->getError();
         }
+        // if skip_on_error is enabled it will try to authenticate the user locally if RADIUS authentication fails
         if ($error) {
             $this->error("RADIUS Login Error: $error");
             $_REQUEST["error"] = $error;
