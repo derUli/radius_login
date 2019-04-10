@@ -13,7 +13,7 @@ Enables users to login using a RADIUS server
 1. Add this snippet to your CMSConfig.php before installation of packages. Adjust it to your individual requirements.
 
 ```php
-	var $radius_login = [ 
+	public $radius_login = [ 
 			"radius_host" => [ 
 					"server1",
 					"server2",

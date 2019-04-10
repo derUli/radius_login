@@ -53,7 +53,15 @@ class RadiusLogin extends Controller
             // Create user if it doesn't exists (if create_user is enabled)
             if (! $user and isset($cfg["create_user"]) and $cfg["create_user"]) {
                 $this->debug("User $username doesn't exists. Create it.");
-                adduser($username, $cfg["default_lastname"] ?? "Doe", $cfg["default_firstname"] ?? "John", $email, $_POST["password"], false);
+       
+					$user = new User();
+					$user->setUsername($username);
+					$user->setLastname($cfg["default_lastname"] ?? "Doe");
+					$user->setFirstname($cfg["default_firstname"] ?? "John");
+					$user->setEmail($email);
+					$user->setPassword($_POST["password"]);
+					$user->setPrimaryGroupId(Settings::get("default_acl_group") ? intval(Settings::get("default_acl_group")) : null );
+					$user->save();
             }
             $user = getUserByName($username);
             if ($user) {
