@@ -7,8 +7,5 @@
     ],
     "compatible_from": "2019.3.1",
     "dependencies": [],
-    "required_php_extensions": [
-        "radius"
-    ],
     "min_php_version": "7.0"
 }
