@@ -1,5 +1,7 @@
 <?php
 
+use Dapphp\Radius\Radius;
+
 class RadiusAuthenticator {
 
     private $mainClass;
@@ -12,47 +14,27 @@ class RadiusAuthenticator {
     }
 
     public function authenticate($username, $password) {
-        $radius = radius_auth_open();
-        // iterate through all configured radius hosts
-        // radius_login will try to authenticate on the first radius host
-        // if this fails it will try ton authenticate on the next host
-        // This will continue until the last host in the list is reached.
-        if (is_array($this->cfg["radius_host"])) {
-            foreach ($this->cfg["radius_host"] as $host) {
-                radius_add_server($radius, $host, $this->cfg["port"] ?? DEFAULT_RADIUS_AUTHENTICATION_PORT, $this->cfg["shared_secret"], DEFAULT_RADIUS_TIMEOUT, DEFAULT_MAX_TRIES);
-                $this->mainClass->debug("RADIUS Server: $host");
+        $client = new Radius();
+        $client->setSecret($this->cfg["shared_secret"]);
+        $servers = is_array($this->cfg["radius_host"]) ? $this->cfg["radius_host"] : [$this->cfg["radius_host"]];
+        $authenticated = $client->accessRequestList($servers, $username, $password, DEFAULT_RADIUS_TIMEOUT);
+
+        if ($authenticated === false) {
+            $message = $client->getErrorMessage();
+            switch ($message) {
+                case "Access rejected":
+                    $this->error = get_translation("USER_OR_PASSWORD_INCORRECT");
+                    break;
+
+                default:
+                    $this->error = get_translation("radius_error_occurred", [
+                        "%error%" => $client->getErrorMessage(),
+                        "%code%" => $client->getErrorCode()
+                    ]);
+                    break;
             }
-        } else {
-            radius_add_server($radius, $this->cfg["radius_host"], $this->cfg["port"] ?? DEFAULT_RADIUS_AUTHENTICATION_PORT, $this->cfg["shared_secret"], DEFAULT_RADIUS_TIMEOUT, DEFAULT_MAX_TRIES);
-            $this->mainClass->debug("RADIUS Server: " . $this->cfg["radius_host"]);
         }
-        radius_create_request($radius, RADIUS_ACCESS_REQUEST);
-        radius_put_attr($radius, RADIUS_USER_NAME, $username);
-        radius_put_attr($radius, RADIUS_USER_PASSWORD, $password);
-
-        $result = radius_send_request($radius);
-
-        $this->error = null;
-        switch ($result) {
-            case RADIUS_ACCESS_ACCEPT:
-                return true;
-                break;
-            case RADIUS_ACCESS_REJECT:
-                // An Access-Reject response to an Access-Request indicating that the RADIUS server could not authenticate the user.
-                $this->error = get_translation("USER_OR_PASSWORD_INCORRECT");
-                return false;
-                break;
-            case RADIUS_ACCESS_CHALLENGE:
-                // TODO: Implement Challenge
-                $this->error = get_translation("challenge_required");
-            default:
-                // TODO: Fehlerstrings von libradius benutzerfreundlich aufbereiten
-                $this->error = get_translation("radius_error_occurred", array(
-                    "%error%" => radius_strerror($radius)
-                ));
-                break;
-        }
-        return false;
+        return $authenticated;
     }
 
     public function getError() {
