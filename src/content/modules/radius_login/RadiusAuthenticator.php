@@ -25,7 +25,6 @@ class RadiusAuthenticator {
                 case "Access rejected":
                     $this->error = get_translation("USER_OR_PASSWORD_INCORRECT");
                     break;
-
                 default:
                     $this->error = get_translation("radius_error_occurred", [
                         "%error%" => $client->getErrorMessage(),
