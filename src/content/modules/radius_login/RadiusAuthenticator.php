@@ -1,22 +1,17 @@
 <?php
 
-class RadiusAuthenticator
-{
+class RadiusAuthenticator {
 
     private $mainClass;
-
     private $cfg;
-
     private $error = null;
 
-    public function __construct($mainClass)
-    {
+    public function __construct($mainClass) {
         $this->mainClass = $mainClass;
         $this->cfg = $mainClass->getConfiguration();
     }
 
-    public function authenticate($username, $password)
-    {
+    public function authenticate($username, $password) {
         $radius = radius_auth_open();
         // iterate through all configured radius hosts
         // radius_login will try to authenticate on the first radius host
@@ -34,9 +29,9 @@ class RadiusAuthenticator
         radius_create_request($radius, RADIUS_ACCESS_REQUEST);
         radius_put_attr($radius, RADIUS_USER_NAME, $username);
         radius_put_attr($radius, RADIUS_USER_PASSWORD, $password);
-        
+
         $result = radius_send_request($radius);
-        
+
         $this->error = null;
         switch ($result) {
             case RADIUS_ACCESS_ACCEPT:
@@ -60,8 +55,8 @@ class RadiusAuthenticator
         return false;
     }
 
-    public function getError()
-    {
+    public function getError() {
         return $this->error;
     }
+
 }

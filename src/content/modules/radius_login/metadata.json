@@ -1,13 +1,13 @@
 {
-	"source": "extend",
-	"version": "1.4",
-	"embed": false,
-	"objects": {
-		"RadiusConstants": "Constants.php",
-		"RadiusAuthenticator": "RadiusAuthenticator.php"
-	},
-	"controllers": {
-		"RadiusLogin": "RadiusLogin.php"
-	},
-	"main_class": "RadiusLogin"
+    "source": "extend",
+    "version": "1.5",
+    "embed": false,
+    "objects": {
+        "RadiusConstants": "Constants.php",
+        "RadiusAuthenticator": "RadiusAuthenticator.php"
+    },
+    "controllers": {
+        "RadiusLogin": "RadiusLogin.php"
+    },
+    "main_class": "RadiusLogin"
 }

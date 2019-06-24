@@ -1,15 +1,13 @@
 <?php
 
-class RadiusLogin extends Controller
-{
+class RadiusLogin extends Controller {
 
     // Initialize logging if enabled
-    public function beforeInit()
-    {
+    public function beforeInit() {
         $cfg = $this->getConfiguration();
         $logPath = Path::resolve("ULICMS_DATA_STORAGE_ROOT/content/log/radius_login");
         if (isset($cfg["log_enabled"]) and $cfg["log_enabled"]) {
-            if (! file_exists($logPath)) {
+            if (!file_exists($logPath)) {
                 mkdir($logPath, null, true);
             }
             $this->logger = new Katzgrau\KLogger\Logger($logPath, Psr\Log\LogLevel::DEBUG, array(
@@ -19,8 +17,7 @@ class RadiusLogin extends Controller
     }
 
     // get radius_login configuration from config file
-    public function getConfiguration()
-    {
+    public function getConfiguration() {
         $cfg = new CMSConfig();
         if (isset($cfg->radius_login)) {
             return $cfg->radius_login;
@@ -29,15 +26,14 @@ class RadiusLogin extends Controller
     }
 
     // handle authentication
-    public function sessionDataFilter($sessionData)
-    {
+    public function sessionDataFilter($sessionData) {
         // empty passwords are not supported
         if (empty($_POST["user"]) or empty($_POST["password"]) or ! $this->getConfiguration()) {
             return $sessionData;
         }
         $username = trim($_POST["user"]);
         $cfg = $this->getConfiguration();
-        
+
         $skip_on_error = (isset($cfg["skip_on_error"]) and $cfg["skip_on_error"]);
         if ($skip_on_error) {
             $this->debug("skip_on_error is enabled");
@@ -51,17 +47,17 @@ class RadiusLogin extends Controller
             $user = getUserByName($username);
             $email = $username . "@" . $cfg["mail_suffix"];
             // Create user if it doesn't exists (if create_user is enabled)
-            if (! $user and isset($cfg["create_user"]) and $cfg["create_user"]) {
+            if (!$user and isset($cfg["create_user"]) and $cfg["create_user"]) {
                 $this->debug("User $username doesn't exists. Create it.");
-       
-					$user = new User();
-					$user->setUsername($username);
-					$user->setLastname($cfg["default_lastname"] ?? "Doe");
-					$user->setFirstname($cfg["default_firstname"] ?? "John");
-					$user->setEmail($email);
-					$user->setPassword($_POST["password"]);
-					$user->setPrimaryGroupId(Settings::get("default_acl_group") ? intval(Settings::get("default_acl_group")) : null );
-					$user->save();
+
+                $user = new User();
+                $user->setUsername($username);
+                $user->setLastname($cfg["default_lastname"] ?? "Doe");
+                $user->setFirstname($cfg["default_firstname"] ?? "John");
+                $user->setEmail($email);
+                $user->setPassword($_POST["password"]);
+                $user->setPrimaryGroupId(Settings::get("default_acl_group") ? intval(Settings::get("default_acl_group")) : null );
+                $user->save();
             }
             $user = getUserByName($username);
             if ($user) {
@@ -69,14 +65,14 @@ class RadiusLogin extends Controller
                 if (isset($cfg["sync_passwords"]) and $cfg["sync_passwords"]) {
                     $pwdUser = new User();
                     $pwdUser->loadByUsername($username);
-                    if ($pwdUser->getPassword() != Encryption::hashPassword($_POST["password"])) {
+                    if (!$pwdUser->checkPassword($_POST["password"])) {
                         $this->debug("Password of $username was changed. Syncronize password.");
                         $pwdUser->setPassword($_POST["password"]);
                         $pwdUser->save();
                     }
                 }
                 $this->debug("User Login $username OK.");
-                
+
                 return $user;
             }
         } else {
@@ -94,24 +90,22 @@ class RadiusLogin extends Controller
         return $sessionData;
     }
 
-    public function debug($message, $context = array())
-    {
+    public function debug($message, $context = array()) {
         if ($this->logger) {
             $this->logger->debug($message, $context);
         }
     }
 
-    public function info($message, $context = array())
-    {
+    public function info($message, $context = array()) {
         if ($this->logger) {
             $this->logger->info($message, $context);
         }
     }
 
-    public function error($message, $context = array())
-    {
+    public function error($message, $context = array()) {
         if ($this->logger) {
             $this->logger->error($message, $context);
         }
     }
+
 }
