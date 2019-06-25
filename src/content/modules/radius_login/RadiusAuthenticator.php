@@ -16,6 +16,10 @@ class RadiusAuthenticator {
     public function authenticate($username, $password) {
         $client = new Radius();
         $client->setSecret($this->cfg["shared_secret"]);
+
+        $port = $this->cfg["port"] ?? DEFAULT_RADIUS_AUTHENTICATION_PORT;
+        $client->setAuthenticationPort($port);
+
         $servers = is_array($this->cfg["radius_host"]) ? $this->cfg["radius_host"] : [$this->cfg["radius_host"]];
         $authenticated = $client->accessRequestList($servers, $username, $password, DEFAULT_RADIUS_TIMEOUT);
 

@@ -20,6 +20,7 @@ Enables users to login using a RADIUS server
 					"server3",
 					"server4" 
 			],
+			"port" => 1812,
 			"create_user" => true,
 			"default_firstname" => "John",
 			"default_lastname" => "Doe",

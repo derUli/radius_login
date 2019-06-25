@@ -20,6 +20,7 @@ Ermöglicht Usern sich über einen RADIUS Server an UliCMS anzumelden.
 					"server3",
 					"server4" 
 			],
+			"port" => 1812,
 			"create_user" => true,
 			"default_firstname" => "John",
 			"default_lastname" => "Doe",
